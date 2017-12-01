@@ -16,11 +16,24 @@
 def _pip_import_impl(repository_ctx):
   """Core implementation of pip_import."""
 
+  build_file_contents = """
+load(":requirements.bzl", "all_requirements", "all_requirement_names", "requirement")
+
+py_library(
+    name = "all_requirements",
+    deps = all_requirements,
+)
+
+[py_library(
+    name = "requirement/"+name,
+    deps = [requirement(name)],
+) for name in all_requirement_names]
+"""
   # Add an empty top-level BUILD file.
   # This is because Bazel requires BUILD files along all paths accessed
   # via //this/sort/of:path and we wouldn't be able to load our generated
   # requirements.bzl without it.
-  repository_ctx.file("BUILD", "")
+  repository_ctx.file("BUILD", build_file_contents)
 
   # To see the output, pass: quiet=False
   result = repository_ctx.execute([

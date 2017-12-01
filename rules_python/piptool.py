@@ -213,6 +213,7 @@ _requirements = {{
 }}
 
 all_requirements = _requirements.values()
+all_requirement_names = _requirements.keys()
 
 def requirement(name):
   name_key = name.replace("-", "_").lower()
